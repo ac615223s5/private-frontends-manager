@@ -1,0 +1,1 @@
+redirects some websites (such as youtube and reddit) to an alternative frontends. Automatically redirects broken instances to other instances.
