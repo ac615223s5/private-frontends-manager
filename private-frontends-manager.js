@@ -8,11 +8,11 @@
 
 const piped_default_channel_group = "main";
 const piped_autoplay_playlist_only = true;
-const piped_individous_switcheroo = true; //redirects to individous for viewing channels and homepage, and back to piped for videos and subscriptions
-const piped_buffer_patience = 8; //redirects if number of seconds buffering in the last minute exceeds this
-const piped_loading_patience = 5; //redirect if the page takes this long to load
+const piped_individous_switcheroo=true; //redirects to individous for viewing channels and homepage, and back to piped for videos and subscriptions
+const piped_buffer_patience=8; //redirects if number of seconds buffering in the last minute exceeds this
+const piped_loading_patience=5; //redirect if the page takes this long to load
 let services = {
-  "individous": {
+  "individous":{
     from: [
       //"youtube.com",
     ],
@@ -50,9 +50,9 @@ let services = {
       "farside.link/invidious",
     ],
   },
-  "piped": { //backend instance be switched in preferences while using any frontend
+  "piped":{ //backend instance be switched in preferences while using any frontend
     from: [
-      "youtube.com",
+      //"youtube.com",
     ],
     to: [
       "piped.video",
@@ -80,17 +80,23 @@ let services = {
       "piped.agew.tech",
     ],
   },
-  "piped backend": {
-    from: [],
-    to: [
+  "piped backend":{
+    from:[],
+    to:[
       "https://pipedapi.kavin.rocks",
+      "https://piped-api.lunar.icu",
       "https://pipedapi.darkness.services",
       "https://pipedapi-libre.kavin.rocks",
+      "https://api.piped.projectsegfau.lt",
+      "https://pipedapi.in.projectsegfau.lt",
+      "https://pipedapi.us.projectsegfau.lt",
+      "https://pipedapi.smnz.de",
       "https://api.piped.privacydev.net",
       "https://pipedapi.adminforge.de",
       "https://pipedapi.frontendfriendly.xyz",
       "https://api.piped.yt",
       "https://pipedapi.astartes.nl",
+      "https://pipedapi.ducks.party",
       "https://pipedapi.drgns.space",
       "https://piapi.ggtyler.dev",
       "https://pipedapi.ngn.tf",
@@ -103,7 +109,7 @@ let services = {
       "https://pipedapi.nosebs.ru",
     ]
   },
-  "libreddit": {
+  "libreddit":{
     from: [
       "reddit.com",
       "old.reddit.com",
@@ -142,7 +148,7 @@ let services = {
       "farside.link/libreddit"
     ],
   },
-  "nitter": {
+  "nitter":{
     from: [
       "twitter.com",
       "x.com"
@@ -155,7 +161,7 @@ let services = {
       "farside.link/nitter"
     ],
   },
-  "proxitok": {
+  "proxitok":{
     from: [
       "tiktok.com"
     ],
@@ -179,7 +185,7 @@ let services = {
       "proxitok.r4fo.com"
     ],
   },
-  "proxigram": {
+  "proxigram":{
     from: [
       "instagram.com"
     ],
@@ -193,7 +199,7 @@ let services = {
       "bibliogram.froth.zone/",
     ],
   },
-  "quetre": {
+  "quetre":{
     from: [
       "quora.com"
     ],
@@ -221,7 +227,7 @@ let services = {
       "quetre.ducks.party"
     ],
   },
-  "rimgo": { //this frontend is incomplete
+  "rimgo":{
     from: ["imgur.com"],
     to: [
       "rimgo.vern.cc",
@@ -255,7 +261,7 @@ let services = {
       "rimgo.perennialte.ch",
     ],
   },
-  "libremdb": { //this frontend is incomplete
+  "libremdb":{ //this frontend is incomplete
     from: [],
     to: [
       "libremdb.iket.me",
@@ -279,7 +285,7 @@ let services = {
       "farside.link/libremdb",
     ],
   },
-  "searxng": {
+  "searxng":{
     from: [],
     to: [
       "stellar.agew.tech",
@@ -295,7 +301,7 @@ let services = {
 function newPageLoaded() {
   let url = location.href;
   url = url = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split('/')[0];
-  for (const [name, service] of Object.entries(services)) {
+  for (const [name,service] of Object.entries(services)) {
     if (service.from.includes(url)) {
       console.log(`redirecting ${url} as`, service);
       redirect(name, url);
@@ -303,31 +309,31 @@ function newPageLoaded() {
     }
     if (service.to.includes(url)) {
       console.log(`detected ${url} as ${name}`);
-      if (service.customScript) {
-        service.customScript(() => { redirect(name, url); });
+      if(service.customScript){
+        service.customScript(()=>{redirect(name,url);});
       }
       return;
     }
   }
 }
 function getRedirect(name, url) {
-  if (!services[name]) {
-    console.log(name + " is not a service");
+  if(!services[name]){
+    console.log(name+" is not a service");
     return;
   }
-  const service = services[name];
+  const service=services[name];
   let id = service.to.findIndex(a => a == url) + 1;
   if (id >= service.to.length) {
     console.log("No more instances!");
     return;
   }
-  console.log(`${url} is bad, redirecting now`);
   return service.to[id];
 }
 function redirect(name, url) {
-  if (name === "piped backend") {
-    const instance = localStorage.getItem("instance");
-    localStorage.setItem("instance", getRedirect("piped backend", instance));
+  console.log(`${url} is bad, redirecting now`);
+  if(name==="piped backend"){
+    const instance=localStorage.getItem("instance");
+    localStorage.setItem("instance", getRedirect("piped backend",instance));
     location.reload();
     return;
   }
@@ -337,18 +343,22 @@ function redirect(name, url) {
   }
 }
 
-services.piped.customScript = (doRedirect) => {
-  if (piped_individous_switcheroo) {
-    let nav = document.querySelector("nav ul");
-    nav.innerHTML = `<li><a href="https://${getRedirect("individous")}/feed/popular" class="">Home</a></li>` + nav.innerHTML;
-  }
+services.piped.customScript=(doRedirect)=>{
   let prevPath;
-  let loadingTime = 0;
-  let bufferingTimes = [];
+  let loadingTime=0;
+  let bufferingTimes=[];
+  let updateNav=true;
   function updatePage() { //piped routing does not do refreshes so keep checking periodically
-    if (piped_individous_switcheroo && (location.pathname.startsWith("/channel/") || location.pathname.startsWith("/c/"))) {
+    if (piped_individous_switcheroo&& (location.pathname.startsWith("/channel/") || location.pathname.startsWith("/c/"))) {
       redirect("individous");
       return;
+    }
+    if(piped_individous_switcheroo&&updateNav){
+      let nav = document.querySelector("nav ul");
+      if(nav){
+      	nav.innerHTML = `<li><a href="https://${getRedirect("individous")}/feed/popular" class="">Home</a></li>` + nav.innerHTML;
+        updateNav=false;
+      }
     }
     if (prevPath != location.pathname && location.pathname.startsWith("/feed")) {
       if (piped_default_channel_group) {
@@ -360,24 +370,26 @@ services.piped.customScript = (doRedirect) => {
         }
       }
     }
-    if (location.pathname.startsWith("/watch")) {
+    if(location.pathname.startsWith("/watch")){
       console.log(bufferingTimes.length);
-      if (bufferingTimes.length > piped_buffer_patience * 1000 / 250) {
-        localStorage.setItem("reloadResumeTime", document.querySelector('video.shaka-video').currentTime);
+      if(bufferingTimes.length>piped_buffer_patience*1000/250){
+        localStorage.setItem("reloadResumeTime",document.querySelector('video.shaka-video').currentTime);
         redirect("piped backend");
         return;
       }
-      if (prevPath != location.pathname + location.search) {
+      if (prevPath != location.pathname+location.search) {
         const seekbar = document.querySelector(".shaka-controls-container .shaka-seek-bar");
-        if (seekbar) {
-          prevPath = location.pathname + location.search;
+        if(seekbar){
+          prevPath=location.pathname+location.search;
           seekbar.addEventListener("mouseup", () => {
             document.querySelector('video').focus();
           });
-          if (localStorage.getItem("reloadResumeTime")) {
-            document.querySelector('video.shaka-video').currentTime = localStorage.getItem("reloadResumeTime");
+          if(localStorage.getItem("reloadResumeTime")){
+            document.querySelector('video.shaka-video').currentTime=localStorage.getItem("reloadResumeTime");
             document.querySelector('video').play();
-            localStorage.removeItem("reloadResumeTime");
+            if(!document.querySelector('video').paused){
+              localStorage.removeItem("reloadResumeTime");
+            }
           }
         }
         if (piped_autoplay_playlist_only) {
@@ -394,48 +406,48 @@ services.piped.customScript = (doRedirect) => {
       }
       let e;
       e = document.querySelector('.w-full p');
-      if (e && (e.innerText === `Got error: "Sign in to confirm that you're not a bot"` || e.innerText === `Watch on the latest version of YouTube.`)) {
+      if (e && (e.innerText === `Got error: "Sign in to confirm that you're not a bot"`||e.innerText===`Watch on the latest version of YouTube.`)) {
         redirect("piped backend");
       }
-      e = document.querySelector('.player-container span.absolute.text-lg');
-      if (e && e.innerText.includes("error")) {
+      e= document.querySelector('.player-container span.absolute.text-lg');
+      if(e&&e.innerText.includes("error")){
         redirect("piped backend");
       }
     }
 
-    const spinner = document.querySelector('#spinner');
-    if (spinner) {
-      if (loadingTime == 0) {
-        loadingTime = Date.now();
+    const spinner=document.querySelector('#spinner');
+    if(spinner){
+      if(loadingTime==0){
+        loadingTime=Date.now();
       }
-      else if (Date.now() - loadingTime > piped_loading_patience * 1000) {
+      else if(Date.now()-loadingTime>piped_loading_patience*1000){
         redirect("piped backend");
       }
     }
-    else {
-      loadingTime = 0;
+    else{
+      loadingTime=0;
     }
     setTimeout(updatePage, 1000);
   }
   updatePage();
-  function checkBuffer() {
-    if (location.pathname === "/watch") {
-      const bufferSpinner = document.querySelector(".shaka-spinner-container");
-      if (bufferSpinner && !bufferSpinner.classList.contains("shaka-hidden")) {
-        const now = Date.now();
+  function checkBuffer(){
+    if(location.pathname==="/watch"){
+      const bufferSpinner=document.querySelector(".shaka-spinner-container");
+      if(bufferSpinner&&!bufferSpinner.classList.contains("shaka-hidden")){
+        const now=Date.now();
         bufferingTimes.push(now);
-        while (bufferingTimes.length > 0 && bufferingTimes[0] < now - 60000) {
-          bufferingTimes.splice(0, 1);
+        while(bufferingTimes.length>0&&bufferingTimes[0]<now-60000){
+          bufferingTimes.splice(0,1);
         }
       }
     }
-    setTimeout(checkBuffer, 250);
+    setTimeout(checkBuffer,250);
   }
   checkBuffer();
 };
 
-services.individous.customScript = (doRedirect) => {
-  if (piped_individous_switcheroo) {
+services.individous.customScript=(doRedirect)=>{
+  if(piped_individous_switcheroo){
     if (location.pathname.startsWith("/feed/subscriptions")) {
       location.replace(`https://${getRedirect("piped")}/feed`);
       return;
@@ -447,28 +459,28 @@ services.individous.customScript = (doRedirect) => {
   }
 };
 
-services.libreddit.customScript = (doRedirect) => {
+services.libreddit.customScript=(doRedirect)=>{
   let x;
   x = document.querySelector('center h1');
   if (x !== null) {
-    if (["403", "504", "429", "410"].reduce((ans, code) => ans | x.innerText.includes(code), false)) {
+    if(["403", "504", "429", "410"].reduce((ans, code) => ans | x.innerText.includes(code), false)){
       doRedirect();
     }
   }
-  x = document.querySelector(".neterror");
-  if (x !== null) {
+  x=document.querySelector(".neterror");
+  if(x!==null){
     doRedirect();
   }
-  x = document.querySelector(".centered div img[src*='http.cat']");
-  if (x !== null) {
+  x=document.querySelector(".centered div img[src*='http.cat']");
+  if(x!==null){
     doRedirect();
   }
   x = document.querySelector("body>pre");
-  if (x !== null && (x.innerText == "Too big request header" || x.innerText == "no available server")) {
+  if(x !== null && (x.innerText == "Too big request header" || x.innerText == "no available server")){
     doRedirect();
   }
   x = document.querySelector("#error");
-  if (x !== null && x.innerText != "Nothing here") {
+  if(x !== null && x.innerText != "Nothing here"){
     doRedirect();
   }
   let links = document.querySelectorAll("#column_one a");
@@ -483,54 +495,54 @@ services.libreddit.customScript = (doRedirect) => {
   }*/
 };
 
-services.quetre.customScript = (doRedirect) => {
+services.quetre.customScript=(doRedirect)=>{
   let x;
   x = document.querySelector("#main .error__code");
-  if (x !== null && x.innerText == "503") {
+  if(x !== null && x.innerText == "503"){
     doRedirect();
   }
 };
 
-services.proxigram.customScript = (doRedirect) => {
+services.proxigram.customScript=(doRedirect)=>{
   let x;
   x = document.querySelector("h2.text-center");
   if (x !== null) {
-    if (["403", "504", "429", "410"].reduce((ans, code) => ans || x.innerText.includes(code), false)) {
+    if(["403", "504", "429", "410"].reduce((ans, code) => ans || x.innerText.includes(code), false)){
       doRedirect();
     }
   }
 };
 
-services.nitter.customScript = (doRedirect) => {
+services.nitter.customScript=(doRedirect)=>{
   let x;
   x = document.querySelector('center:nth-of-type(2)');
-  if (x !== null && x.innerText.includes("nginx")) {
+  if (x !== null&&x.innerText.includes("nginx")) {
     doRedirect();
   }
   x = document.querySelector(".error-panel");
-  if (x !== null && x.innerText != "Tweet not found") {
+  if(x !== null && x.innerText != "Tweet not found"){
     doRedirect();
   }
 };
 
-services.rimgo.customScript = (doRedirect) => {
+services.rimgo.customScript=(doRedirect)=>{
   let x;
   x = document.querySelector("main h2");
-  if (x !== null && x.innerText == "Rate limited by Imgur") doRedirect();
+  if(x !== null && x.innerText == "Rate limited by Imgur") doRedirect();
   x = document.querySelector("img.object-contain");
   if (x !== null) {
     if (!x.complete) {
-      setTimeout(checkInstance, 1000, name, url);
+      setTimeout(services.rimgo.customScript,1000,doRedirect);
       return;
     }
-    if (x.naturalWidth === 0) doRedirect();
+    if(x.naturalWidth === 0) doRedirect();
   }
 };
 
-services.libremdb.customScript = (doRedirect) => {
+services.libremdb.customScript=(doRedirect)=>{
   let x;
   x = document.querySelector(".error-info_heading___IiEO");
-  if (x !== null) {
+  if(x !== null){
     doRedirect();
   }
 };
