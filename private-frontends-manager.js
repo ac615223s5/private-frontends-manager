@@ -10,7 +10,7 @@ const piped_default_channel_group = "main";
 const piped_autoplay_playlist_only = true;
 const piped_individous_switcheroo=true; //redirects to individous for viewing channels and homepage, and back to piped for videos and subscriptions
 const piped_buffer_patience=8; //redirects if number of seconds buffering in the last minute exceeds this
-const piped_loading_patience=5; //redirect if the page takes this long to load
+const piped_loading_patience=4; //redirect if the page takes this long to load
 let services = {
   "individous":{
     from: [
