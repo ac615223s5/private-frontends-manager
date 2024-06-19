@@ -1,0 +1,77 @@
+/*
+==UserCSS==
+@name          theme 1 individious
+// @match        *://yewtu.be/*
+// @match        *://vid.puffyan.us/*
+// @match        *://inv.riverside.rocks/*
+// @match        *://y.com.sb/*
+// @match        *://invidious.nerdvpn.de/*
+// @match        *://invidious.tiekoetter.com/*
+// @match        *://yt.artemislena.eu/*
+// @match        *://invidious.flokinet.to/*
+// @match        *://inv.bp.projectsegfau.lt/*
+// @match        *://inv.odyssey346.dev/*
+// @match        *://invidious.sethforprivacy.com/*
+// @match        *://inv.vern.cc/*
+// @match        *://invidious.baczek.me/*
+// @match        *://invidious.snopyta.org/*
+// @match        *://iv.ggtyler.dev/*
+// @match        *://invidious.lunar.icu/*
+// @match        *://invidious.privacydev.net/*
+// @match        *://invidious.slipfox.xyz/*
+// @match        *://invidious.esmailelbob.xyz/*
+// @match        *://iv.melmac.space/*
+// @match        *://yt.oelrichsgarcia.de/*
+// @match        *://invidious.lidarshield.cloud/*
+// @match        *://invidious.weblibre.org/*
+// @match        *://watch.thekitty.zone/*
+// @match        *://invidious.kavin.rocks/*
+// @match        *://inv.vern.i2p/*
+// @match        *://w6ijuptxiku4xpnnaetxvnkc5vqcdu7mgns2u77qefoixi63vbvnpnqd.onion/*
+// @match        *://kbjggqkzv65ivcqj6bumvp337z6264huv5kpkwuv6gu5yjiskvan7fad.onion/*
+// @match        *://grwp24hodrefzvjjuccrkw3mjq4tzhaaq32amf33dzpmuxe7ilepcmad.onion/*
+// @match        *://osbivz6guyeahrwp2lnwyjk2xos342h4ocsxyqrlaopqjuhwn2djiiyd.onion/*
+// @match        *://c7hqkpkpemu6e7emz5b4vyz7idjgdvgaaa3dyimmeojqbgpea3xqjoid.onion/*
+// @match        *://euxxcnhsynwmfidvhjf6uzptsmh4dipkmgdmcmxxuo7tunp3ad2jrwyd.onion/*
+// @match        *://invidious.esmail5pdn24shtvieloeedh7ehz3nrwcdivnfhfcedl7gf4kwddhkqd.onion/*
+// @match        *://inv.vernccvbvyi5qhfzyqengccj7lkove6bjot2xhh5kajhwvidqafczrad.onion/*
+// @match        *://am74vkcrjp2d5v36lcdqgsj2m6x36tbrkhsruoegwfcizzabnfgf5zyd.onion/*
+// @match        *://ng27owmagn5amdm7l5s3rsqxwscl5ynppnis5dqcasogkyxcfqn7psid.onion/*
+// @match        *://iv.odysfvr23q5wgt7i456o5t3trw2cw5dgn56vbjfbq2m7xsc5vqbqpcyd.onion/*
+// @match        *://invidious.g4c3eya4clenolymqbpgwz3q3tawoxw56yhzk4vugqrl6dtu3ejvhjid.onion/*
+// @match        *://u2cvlit75owumwpy4dj2hsmvkq7nvrclkpht7xgyye2pyoxhpmclkrad.onion/*
+@version          1.0
+==/UserCSS==
+*/
+
+
+@media (prefers-color-scheme: dark) {
+  div.video-card-row:nth-of-type(2) a{
+    font-weight:600;
+    color:white !important;
+  }
+
+
+
+  .h-box{
+    padding-bottom:1em;
+  }
+  #contents{
+    margin:0;
+    width:100%;
+  }
+  div.pure-g:nth-of-type(5){
+    width:80%;
+    margin: 5rem auto;
+    padding: 1rem;
+  }
+  .pure-u-md-1-4, .pure-u-md-6-24{
+    width:12.5% !important;
+  }
+
+  body > .pure-g {
+    background: linear-gradient(180deg, #0000 70%, #db3975 120%) fixed, url(https://images2.alphacoders.com/111/1116781.jpg);
+    background-size: cover;
+    background-attachment:fixed;
+  }
+}

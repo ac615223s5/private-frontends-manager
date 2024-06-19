@@ -1,0 +1,62 @@
+/*
+==UserCSS==
+@name          theme 1 piped
+// @match        https://piped.video/*
+@version          1.0
+==/UserCSS==
+*/
+
+
+@media (prefers-color-scheme: dark) {
+  div.video-card-row:nth-of-type(2) a{
+    font-weight:600;
+    color:white !important;
+  }
+
+  .h-box{
+    padding-bottom:1em;
+  }
+  #contents{
+    margin:0;
+    width:100%;
+  }
+  div.pure-g:nth-of-type(5){
+    width:80%;
+    margin: 5rem auto;
+    padding: 1rem;
+  }
+  .pure-u-md-1-4, .pure-u-md-6-24{
+    width:12.5% !important;
+  }
+
+  /*background*/
+  .dark {
+    /*background: linear-gradient(0deg, #0000 0%, #db397552), url(https://images2.alphacoders.com/111/1116781.jpg);*/
+    background: linear-gradient(180deg, #0000 70%, #db3975 120%) fixed, url(https://images2.alphacoders.com/111/1116781.jpg);
+    background-size: cover;
+    background-attachment:fixed;
+  }
+  /*searchbar*/
+  nav .search-container input, #search-btn{
+    background:transparent !important;
+    border-radius: 20px !important;
+    border-right: 0px solid;
+    box-shadow: 0 0 0 2px #db397569;
+    color:rgba(255,255,255,0.8) !important;
+  }
+  div:has(> .description ){
+    background: rgba(255, 255, 255, 0.1);
+    border-radius:12px;
+    padding:12px;
+  }
+  .btn {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color:white !important;
+  }
+  footer{
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+  .video-grid{
+    grid-template-columns: repeat(8,minmax(0,1fr));
+  }
+}
