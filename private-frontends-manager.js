@@ -477,7 +477,7 @@ services.libreddit.customScript=(doRedirect)=>{
 services.quetre.customScript=(doRedirect)=>{
   let x;
   x = document.querySelector("#main .error__code");
-  if(x !== null && x.innerText == "503"){
+  if(x !== null && x.innerText){
     doRedirect();
   }
 };
