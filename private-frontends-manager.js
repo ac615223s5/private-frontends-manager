@@ -9,7 +9,7 @@
 const piped_default_channel_group = "main";
 const piped_autoplay_playlist_only = true;
 const piped_individous_switcheroo=true; //redirects to individous for viewing channels and homepage, and back to piped for videos and subscriptions
-const piped_buffer_patience=8; //redirects if number of seconds buffering in the last minute exceeds this
+const piped_buffer_patience=4; //redirects if number of seconds buffering in the last minute exceeds this
 const piped_loading_patience=4; //redirect if the page takes this long to load
 let services = {
   "individous":{
@@ -55,8 +55,8 @@ let services = {
       //"youtube.com",
     ],
     to: [
-      "piped.video",
       "piped.agew.tech",
+      "piped.video",
     ],
   },
   "piped backend":{
@@ -275,6 +275,12 @@ let services = {
       "searx.ericaftereric.top"
     ],
   },
+  "wolfree":{
+    from:[],
+    to:[
+      "wf.opnxng.com",
+    ]
+  }
 };
 
 function newPageLoaded() {
@@ -415,7 +421,7 @@ services.piped.customScript=(doRedirect)=>{
       if(bufferSpinner&&!bufferSpinner.classList.contains("shaka-hidden")){
         const now=Date.now();
         bufferingTimes.push(now);
-        while(bufferingTimes.length>0&&bufferingTimes[0]<now-60000){
+        while(bufferingTimes.length>0&&bufferingTimes[0]<now-10000){
           bufferingTimes.splice(0,1);
         }
       }
