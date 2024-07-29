@@ -62,6 +62,7 @@ let services = {
   "piped backend":{
     from:[],
     to:[
+      "https://pipedapi.agew.tech",
       "https://pipedapi.kavin.rocks",
       "https://piped-api.lunar.icu",
       "https://pipedapi.darkness.services",
@@ -169,6 +170,7 @@ let services = {
       "instagram.com"
     ],
     to: [
+      "proxigram.agew.tech",
       "ig.opnxng.com",
       "proxigram.lunar.icu",
       "gram.whatever.social",
@@ -317,6 +319,7 @@ function getRedirect(name, url) {
 function redirect(name, url) {
   console.log(`${url} is bad, redirecting now`);
   if(name==="piped backend"){
+    return
     const instance=localStorage.getItem("instance");
     localStorage.setItem("instance", getRedirect("piped backend",instance));
     location.reload();
@@ -334,7 +337,7 @@ services.piped.customScript=(doRedirect)=>{
   let bufferingTimes=[];
   let updateNav=true;
   function updatePage() { //piped routing does not do refreshes so keep checking periodically
-    if (piped_individous_switcheroo&& (location.pathname.startsWith("/channel/") || location.pathname.startsWith("/c/"))) {
+    if (piped_individous_switcheroo&& (location.pathname.startsWith("/channel/") || location.pathname.startsWith("/c/")|| location.pathname.startsWith("/user/"))) {
       redirect("individous");
       return;
     }
@@ -358,7 +361,6 @@ services.piped.customScript=(doRedirect)=>{
     if(location.pathname.startsWith("/watch")){
       console.log(bufferingTimes.length);
       if(bufferingTimes.length>piped_buffer_patience*1000/250){
-        localStorage.setItem("reloadResumeTime",document.querySelector('video.shaka-video').currentTime);
         redirect("piped backend");
         return;
       }
@@ -369,12 +371,11 @@ services.piped.customScript=(doRedirect)=>{
           seekbar.addEventListener("mouseup", () => {
             document.querySelector('video').focus();
           });
-          if(localStorage.getItem("reloadResumeTime")){
-            document.querySelector('video.shaka-video').currentTime=localStorage.getItem("reloadResumeTime");
+          const e=Array.from(document.querySelectorAll('.explicit-resolution')).filter(e=>e.innerText.startsWith('1080p'))[0]||document.querySelector('.explicit-resolution');
+          if(e&&e.querySelector('i')===null){
+            //e.click();
+            setTimeout(()=>e.click(),300);
             document.querySelector('video').play();
-            if(!document.querySelector('video').paused){
-              localStorage.removeItem("reloadResumeTime");
-            }
           }
         }
         if (piped_autoplay_playlist_only) {
@@ -495,6 +496,10 @@ services.proxigram.customScript=(doRedirect)=>{
     if(["403", "504", "429", "410"].reduce((ans, code) => ans || x.innerText.includes(code), false)){
       doRedirect();
     }
+  }
+  x=document.querySelector('pre');
+  if(x&&x.innerText=='Internal Server Error'){
+    doRedirect();
   }
 };
 
