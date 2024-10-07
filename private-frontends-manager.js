@@ -7,7 +7,6 @@
 // ==/UserScript==
 
 const piped_default_channel_group = "main";
-const piped_autoplay_playlist_only = true;
 const piped_individous_switcheroo=true; //redirects to individous for viewing channels and homepage, and back to piped for videos and subscriptions
 const piped_buffer_patience=4; //redirects if number of seconds buffering in the last minute exceeds this
 const piped_loading_patience=4; //redirect if the page takes this long to load
@@ -48,6 +47,7 @@ let services = {
       "invidious.perennialte.ch",
       "vid.lilay.dev",
       "farside.link/invidious",
+      "redirect.invidious.io"
     ],
   },
   "piped":{ //backend instance be switched in preferences while using any frontend
@@ -344,7 +344,7 @@ services.piped.customScript=(doRedirect)=>{
     if(piped_individous_switcheroo&&updateNav){
       let nav = document.querySelector("nav ul");
       if(nav){
-      	nav.innerHTML = `<li><a href="https://${getRedirect("individous")}/feed/popular" class="">Home</a></li>` + nav.innerHTML;
+        nav.innerHTML = `<li><a href="https://${getRedirect("individous")}/feed/popular" class="">Home</a></li>` + nav.innerHTML;
         updateNav=false;
       }
     }
@@ -363,32 +363,6 @@ services.piped.customScript=(doRedirect)=>{
       if(bufferingTimes.length>piped_buffer_patience*1000/250){
         redirect("piped backend");
         return;
-      }
-      if (prevPath != location.pathname+location.search) {
-        const seekbar = document.querySelector(".shaka-controls-container .shaka-seek-bar");
-        if(seekbar){
-          prevPath=location.pathname+location.search;
-          seekbar.addEventListener("mouseup", () => {
-            document.querySelector('video').focus();
-          });
-          const e=Array.from(document.querySelectorAll('.explicit-resolution')).filter(e=>e.innerText.startsWith('1080p'))[0]||document.querySelector('.explicit-resolution');
-          if(e&&e.querySelector('i')===null){
-            //e.click();
-            setTimeout(()=>e.click(),300);
-            document.querySelector('video').play();
-          }
-        }
-        if (piped_autoplay_playlist_only) {
-          const playlist = document.querySelector('.order-first .h-screen-sm ');
-          const index = new URLSearchParams(location.search).get('index');
-          const autoPlay = document.querySelector('#chkAutoPlay');
-          if (autoPlay) {
-            autoPlay.checked = autoPlay.value = playlist !== null && index !== null && index < playlist.childElementCount;
-            autoPlay.dispatchEvent(new Event('change'));
-            prevPath = location.pathname;
-          }
-        }
-
       }
       let e;
       e = document.querySelector('.w-full p');
@@ -438,9 +412,21 @@ services.individous.customScript=(doRedirect)=>{
       location.replace(`https://${getRedirect("piped")}/feed`);
       return;
     }
-    if (location.pathname.startsWith("/watch")) {
+    if (location.pathname.startsWith("/watch")||location.pathname.startsWith("/playlist")) {
       redirect("piped");
       return;
+    }
+  }
+  if(location.pathname.startsWith('/channel')){
+    const links=document.querySelectorAll('#contents .pure-u-1-2')[2];
+    let playlist=links.children[0].cloneNode();
+    playlist.innerHTML=`<a href=/playlist?list=UU${location.pathname.split('/')[2].substring(2)}>Play all videos</a>`
+    links.appendChild(playlist);
+  }
+  if(location.pathname.startsWith('/channel')||location.pathname==='/feed/popular'){
+    const videos=document.querySelectorAll('a[href^="/watch"]');
+    for(let video of videos){
+      video.href='https://'+getRedirect("piped")+'/'+video.href.split('/')[3];
     }
   }
 };
@@ -469,16 +455,6 @@ services.libreddit.customScript=(doRedirect)=>{
   if(x !== null && x.innerText != "Nothing here"){
     doRedirect();
   }
-  let links = document.querySelectorAll("#column_one a");
-  /* this might not be needed anymore...
-  for (const link of links) {
-    if ((link.href.includes("/preview/pre/") || link.href.includes("preview.redd.it")) && !link.querySelector("img")) {
-      let img = document.createElement("img");
-      img.style = "max-width:100%;";
-      img.src = link.href;
-      link.appendChild(img);
-    }
-  }*/
 };
 
 services.quetre.customScript=(doRedirect)=>{
