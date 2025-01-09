@@ -9,13 +9,14 @@
 const piped_default_channel_group = "main";
 const piped_individous_switcheroo=true; //redirects to individous for viewing channels and homepage, and back to piped for videos and subscriptions
 const piped_buffer_patience=4; //redirects if number of seconds buffering in the last minute exceeds this
-const piped_loading_patience=4; //redirect if the page takes this long to load
+const piped_loading_patience=3; //redirect if the page takes this long to load
 let services = {
   "individous":{
     from: [
       //"youtube.com",
     ],
     to: [
+      "inv.nadeko.net",
       "vid.puffyan.us",
       "inv.vern.cc",
       "invidious.fdn.fr",
@@ -55,53 +56,38 @@ let services = {
       //"youtube.com",
     ],
     to: [
-      "piped.agew.tech",
+      "piped.stellar.afs.ovh",
       "piped.video",
     ],
   },
   "piped backend":{
     from:[],
     to:[
-      "https://pipedapi.agew.tech",
-      "https://pipedapi.kavin.rocks",
-      "https://piped-api.lunar.icu",
-      "https://pipedapi.darkness.services",
-      "https://pipedapi-libre.kavin.rocks",
-      "https://api.piped.projectsegfau.lt",
-      "https://pipedapi.in.projectsegfau.lt",
-      "https://pipedapi.us.projectsegfau.lt",
-      "https://pipedapi.smnz.de",
-      "https://api.piped.privacydev.net",
-      "https://pipedapi.adminforge.de",
-      "https://pipedapi.frontendfriendly.xyz",
-      "https://api.piped.yt",
-      "https://pipedapi.astartes.nl",
-      "https://pipedapi.ducks.party",
-      "https://pipedapi.drgns.space",
-      "https://piapi.ggtyler.dev",
-      "https://pipedapi.ngn.tf",
-      "https://piped-api.codespace.cz",
-      "https://pipedapi.reallyaweso.me",
-      "https://pipedapi.phoenixthrush.com",
-      "https://api.piped.private.coffee",
-      "https://schaunapi.ehwurscht.at",
-      "https://pipedapi.dedyn.io",
-      "https://pipedapi.nosebs.ru",
+        "https://pipedapi.stellar.afs.ovh",
+"https://pipedapi.leptons.xyz",
+"https://pipedapi.nosebs.ru",
+"https://pipedapi-libre.kavin.rocks",
+"https://pipedapi.smnz.de",
+"https://pipedapi.adminforge.de",
+"https://pipedapi.drgns.space",
+"https://piped-api.codespace.cz",
+"https://pipedapi.reallyaweso.me",
+"https://api.piped.private.coffee",
     ]
   },
   "libreddit":{
     from: [
-      "reddit.com",
-      "old.reddit.com",
+      //"reddit.com",
+      //"old.reddit.com",
     ],
     to: [
-      "redlib.agew.tech",
+      //"redlib.stellar.afs.ovh",
       "libreddit.projectsegfau.lt",
       "libreddit.kavin.rocks",
       "safereddit.com",
-      "libreddit.oxymagnesium.com",
+      //"libreddit.oxymagnesium.com",
       //"reddit.invak.id",
-      "reddit.simo.sh",
+      //"reddit.simo.sh",
       "redlib.northboot.xyz",
       "libreddit.privacydev.net",
       "reddit.utsav2.dev",
@@ -170,7 +156,7 @@ let services = {
       "instagram.com"
     ],
     to: [
-      "proxigram.agew.tech",
+      //"proxigram.stellar.afs.ovh",
       "ig.opnxng.com",
       "proxigram.lunar.icu",
       "gram.whatever.social",
@@ -182,7 +168,7 @@ let services = {
   },
   "quetre":{
     from: [
-      "quora.com"
+      //"quora.com"
     ],
     to: [
       "quetre.iket.me",
@@ -209,7 +195,9 @@ let services = {
     ],
   },
   "rimgo":{
-    from: ["imgur.com"],
+    from: [
+      //"imgur.com"
+     ],
     to: [
       "rimgo.vern.cc",
       "rimgo.pussthecat.org",
@@ -269,7 +257,7 @@ let services = {
   "searxng":{
     from: [],
     to: [
-      "stellar.agew.tech",
+      "stellar.stellar.afs.ovh",
       "paulgo.io",
       "search.sapti.me",
       "gruble.de",
@@ -312,15 +300,16 @@ function getRedirect(name, url) {
   let id = service.to.findIndex(a => a == url) + 1;
   if (id >= service.to.length) {
     console.log("No more instances!");
-    return;
+    return service.to[0];
   }
   return service.to[id];
 }
 function redirect(name, url) {
   console.log(`${url} is bad, redirecting now`);
   if(name==="piped backend"){
-    return
     const instance=localStorage.getItem("instance");
+    console.log(instance);
+    if(instance==="https://pipedapi.stellar.afs.ovh") return;
     localStorage.setItem("instance", getRedirect("piped backend",instance));
     location.reload();
     return;
@@ -335,7 +324,7 @@ services.piped.customScript=(doRedirect)=>{
   let prevPath;
   let loadingTime=0;
   let bufferingTimes=[];
-  let updateNav=true;
+  let updateNav=false;
   function updatePage() { //piped routing does not do refreshes so keep checking periodically
     if (piped_individous_switcheroo&& (location.pathname.startsWith("/channel/") || location.pathname.startsWith("/c/")|| location.pathname.startsWith("/user/"))) {
       redirect("individous");
@@ -366,7 +355,7 @@ services.piped.customScript=(doRedirect)=>{
       }
       let e;
       e = document.querySelector('.w-full p');
-      if (e && (e.innerText === `Got error: "Sign in to confirm that you're not a bot"`||e.innerText===`Watch on the latest version of YouTube.`)) {
+      if (e && (e.innerText === `Got error: "Sign in to confirm that you're not a bot"`||e.innerText===`Watch on the latest version of YouTube.`||e.innerText=='IOS player response is not valid'||e.innerText=='This instance does not have a geo restriction checker set in its configuration')) {
         redirect("piped backend");
       }
       e= document.querySelector('.player-container span.absolute.text-lg');
@@ -423,7 +412,7 @@ services.individous.customScript=(doRedirect)=>{
     playlist.innerHTML=`<a href=/playlist?list=UU${location.pathname.split('/')[2].substring(2)}>Play all videos</a>`
     links.appendChild(playlist);
   }
-  if(location.pathname.startsWith('/channel')||location.pathname==='/feed/popular'){
+  if(location.pathname.startsWith('/channel')||location.pathname.startsWith('/search')||location.pathname==='/feed/popular'){
     const videos=document.querySelectorAll('a[href^="/watch"]');
     for(let video of videos){
       video.href='https://'+getRedirect("piped")+'/'+video.href.split('/')[3];
