@@ -1,0 +1,5 @@
+filter keyword in title: 
+WEBSITE##.post:has(.post_title:has-text(/KEYWORD/))
+
+filter by tag in subreddit:
+WEBSITE##.post:has(.post_subreddit:has-text(r/SUBREDDIT)):has(.post_flair:has-text(TAG))
