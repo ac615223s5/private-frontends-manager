@@ -112,7 +112,6 @@ filters+=[
 "MakeMeFeelGood",
 "OfflinetvGirls",
 "OldSchoolCelebs",
-"OUTFITS",
 "PrettyGirls",
 "rate",
 "reallygorgeous",
